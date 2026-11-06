@@ -1,0 +1,37 @@
+{
+  "format": 1,
+  "title": { "en": "DSH session bridge", "zh": "DSH 会话跳转桥" },
+  "description": {
+    "en": "A reusable local desktop session navigation bridge for DeepSeek Harness.",
+    "zh": "供本机应用复用的 DeepSeek Harness 桌面会话精确跳转插件。"
+  },
+  "plugins": [
+    {
+      "name": "@stxr/dsh-session-bridge",
+      "title": { "en": "DSH session bridge", "zh": "DSH 会话跳转桥" },
+      "description": {
+        "en": "Open an exact desktop conversation from a local application and confirm its history has loaded. Requires the desktop profile.",
+        "zh": "供本机应用精确打开桌面会话，并在历史加载后确认结果；需安装到 desktop profile。"
+      },
+      "icon": "icon.svg",
+      "author": "Stxr",
+      "homepage": "https://github.com/Stxr/dsh-session-bridge#readme",
+      "repository": { "url": "https://github.com/Stxr/dsh-session-bridge" },
+      "metadata": {
+        "keywords": ["dsh-plugin", "deepseek-harness", "session", "navigation", "desktop", "huantai", "会话", "跳转"]
+      },
+      "versions": [
+        {
+          "version": "0.1.0",
+          "publishTimestamp": 1793988583,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Stxr/dsh-session-bridge",
+            "commit": "6a3d991e14ff26d0daa97d351f3bda7a0a27a8e6"
+          },
+          "engines": { "dsh": "0.2.2-rc.1" }
+        }
+      ]
+    }
+  ]
+}
