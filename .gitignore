@@ -1,0 +1,5 @@
+node_modules/
+.local/
+.plugin-market-cache/
+*.tgz
+.DS_Store

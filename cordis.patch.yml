@@ -1,0 +1,4 @@
+- insert:
+    - id: dsh-session-bridge
+      name: '@stxr/dsh-session-bridge'
+      config: {}

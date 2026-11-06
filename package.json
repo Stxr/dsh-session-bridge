@@ -1,0 +1,28 @@
+{
+  "name": "@stxr/dsh-session-bridge",
+  "version": "0.1.0",
+  "description": "Let local applications open an exact DeepSeek Harness desktop session and confirm that its history loaded.",
+  "author": "Stxr",
+  "homepage": "https://github.com/Stxr/dsh-session-bridge#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/Stxr/dsh-session-bridge.git" },
+  "bugs": { "url": "https://github.com/Stxr/dsh-session-bridge/issues" },
+  "keywords": ["dsh-plugin", "deepseek-harness", "cordis", "session", "navigation", "desktop", "huantai"],
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": ["index.js", "bridge.js", "client.js", "cordis.patch.yml", "locale/*.json", "icon.svg", "README.md", "docs/*.md", "tests/*.test.js"],
+  "engines": { "dsh": "0.2.2-rc.1" },
+  "scripts": { "test": "node --test tests/*.test.js", "check": "node --check index.js && node --check bridge.js && node --check client.js" },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": ["@deepseek-ai/dsh-client-connection", "@deepseek-ai/dsh-api-session-controller", "@deepseek-ai/dsh-api-workspace-controller", "@deepseek-ai/dsh-client-ui-workspace"]
+    }
+  }
+}
