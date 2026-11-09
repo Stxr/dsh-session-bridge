@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { readFileSync } from 'node:fs';
 import { webcrypto } from 'node:crypto';
-const code = readFileSync(new URL('../client.js', import.meta.url), 'utf8');
+const code = readFileSync(new URL('../lib/client.js', import.meta.url), 'utf8');
 function snapshot(value) { return { getSnapshot: () => value, subscribe: () => () => {} }; }
 function harness(t, options = {}) {
   const opened = [];
@@ -15,9 +15,9 @@ function harness(t, options = {}) {
   const ack = new Promise(resolve => { resolveAck = resolve; });
   let polled = false;
   const request = { requestId: 'r1', sessionId: 'target', expiresAt: Date.now() + (options.ttl ?? 1000), deliveryToken: 'delivery' };
-  const window = { location: { protocol: options.browser ? 'http:' : 'dsh-app:', hostname: options.browser ? '127.0.0.1' : 'app', pathname: '/' },
+  const window = { location: { protocol: options.browser ? 'http:' : 'dsh-app:', hostname: options.browser ? '127.0.0.1' : 'app', pathname: options.pathname ?? '/' },
     __ModuleLoader__: { load: value => { module = value.factory(); } } };
-  window.top = window;
+  window.top = options.frame ? {} : window;
   const list = { phase: 'ready', byId: { target: { id: 'target', retainedBy: {} }, original: { id: 'original', retainedBy: { mainView: 1 } } } };
   const ctx = {
     connection: { state: snapshot('connected'), rpc: { call: async (_channel, endpoint, payload, signal) => {
@@ -79,4 +79,18 @@ test('browser tabs never start polling or register a consumer', t => {
   const h = harness(t, { browser: true });
   assert.equal(h.effects.length, 0);
   assert.deepEqual(h.opened, []);
+});
+
+test('embedded frames and desktop welcome pages never consume navigation', t => {
+  for (const options of [{ frame: true }, { pathname: '/welcome.html' }]) {
+    const h = harness(t, options);
+    assert.equal(h.effects.length, 0);
+    assert.deepEqual(h.opened, []);
+  }
+});
+
+test('desktop index.html remains a supported consumer entry', async t => {
+  const h = harness(t, { pathname: '/index.html' });
+  assert.equal((await h.ack).status, 'opened');
+  assert.deepEqual(h.opened, ['target']);
 });

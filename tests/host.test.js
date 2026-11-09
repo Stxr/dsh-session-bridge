@@ -4,8 +4,8 @@ import { createServer } from 'node:http';
 import { mkdtempSync, readFileSync, statSync, existsSync, realpathSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
-import { apply } from '../index.js';
-import { CHANNEL, OPEN_PATH, STATUS_PATH } from '../bridge.js';
+import { apply } from '../lib/index.js';
+import { CHANNEL, OPEN_PATH, STATUS_PATH } from '../lib/bridge.js';
 
 test('desktop profileContext publishes private discovery; HTTP uses independent auth and exact acknowledgement', async t => {
   const home = realpathSync(mkdtempSync(join(tmpdir(), 'huantai-bridge-test-')));
@@ -78,6 +78,40 @@ test('desktop profileContext publishes private discovery; HTTP uses independent 
   cleanup.forEach(dispose => dispose());
   assert.equal(existsSync(path), false);
   assert.equal(routes.size, 0);
+});
+
+test('disposing an older generation preserves the replacement discovery record', t => {
+  const home = realpathSync(mkdtempSync(join(tmpdir(), 'huantai-bridge-generation-')));
+  const contexts = [];
+  const createContext = () => {
+    const cleanup = [];
+    contexts.push(cleanup);
+    return {
+      get: () => ({ name: 'desktop', home }),
+      effect: callback => cleanup.push(callback()),
+      webServer: { getOrigin: () => 'http://127.0.0.1:9999', register: () => () => {} },
+      connection: { admit: () => ({ rejection: 401 }) },
+      sessions: { get: () => undefined },
+      sessionPersistence: { stat: async () => undefined },
+    };
+  };
+  t.after(() => {
+    contexts.forEach(cleanup => cleanup.forEach(dispose => dispose()));
+    assert.equal(dirname(home), realpathSync(tmpdir()));
+    assert.ok(basename(home).startsWith('huantai-bridge-generation-'));
+    rmSync(home, { recursive: true });
+  });
+  const discovery = join(home, 'huantai-bridge', 'desktop.json');
+  apply(createContext());
+  const first = JSON.parse(readFileSync(discovery, 'utf8'));
+  apply(createContext());
+  const second = JSON.parse(readFileSync(discovery, 'utf8'));
+  assert.notEqual(first.instanceId, second.instanceId);
+  assert.notEqual(first.token, second.token);
+  contexts[0].forEach(dispose => dispose());
+  assert.deepEqual(JSON.parse(readFileSync(discovery, 'utf8')), second);
+  contexts[1].forEach(dispose => dispose());
+  assert.equal(existsSync(discovery), false);
 });
 
 test('a web profile cannot publish or consume desktop discovery', () => {

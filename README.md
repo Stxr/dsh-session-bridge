@@ -14,13 +14,13 @@ A reusable local session navigation bridge for DeepSeek Harness. External deskto
 请帮我安装 DSH 会话跳转桥：先阅读 https://github.com/Stxr/dsh-session-bridge 的 README，再用 plugin_manager 将推荐的 Git 版本安装到 desktop profile，按返回结果处理重启并检查桥接是否就绪。
 ```
 
-当前推荐 **v0.1.0**，包名为 `@stxr/dsh-session-bridge`，仅兼容 `0.2.2-rc.1`。DSH Agent 可以安装 Git 标签：
+当前推荐 **v0.1.1**，包名为 `@stxr/dsh-session-bridge`，仅兼容 `0.2.2-rc.1`。DSH Agent 可以安装 Git 标签：
 
 ```json
-{"action":"install_bundle","target":"git+https://github.com/Stxr/dsh-session-bridge.git#v0.1.0"}
+{"action":"install_bundle","target":"git+https://github.com/Stxr/dsh-session-bridge.git#v0.1.1"}
 ```
 
-开发时也可克隆本仓库，再将实际绝对目录传给 `plugin_manager`。目录安装会链接源码，须保留该目录。不要在 profile 中手改依赖或配置来代替插件管理器。
+开发时也可克隆本仓库，再将实际绝对目录传给 `plugin_manager`。目录安装会链接仓库中的运行产物，须保留该目录；修改 TypeScript 后先运行 `pnpm build`。不要在 profile 中手改依赖或配置来代替插件管理器。
 
 插件只在 **desktop profile** 提供桥接；安装到 web profile 不会启用桌面跳转。根据插件管理器返回的 `application`、`warnings` 和 `nextStep` 判断是否立即生效，若提示重启则重启官方桌面应用，不绕过版本检查。升级已经加载的代码时也应按返回指引处理。
 
@@ -88,15 +88,20 @@ A reusable local session navigation bridge for DeepSeek Harness. External deskto
 
 ## 开发与验证
 
-无第三方运行依赖，无需构建或安装脚本：
+维护源码为严格 TypeScript：[Host 入口](src/host/index.ts)、[Client 入口](src/client/index.ts)。协议、鉴权、桥接状态、发现文件、HTTP/RPC 和桌面导航分别位于独立模块，职责见[架构说明](docs/architecture.md)。
+
+开发使用 Node.js 24、pnpm 10.17.1；锁文件固定构建依赖。没有第三方运行依赖，也没有 `prepare` / `postinstall` 等安装脚本。仓库提交 `lib/` 中的 JS 和类型声明，Git、目录和打包安装直接读取编译产物，安装方无需下载 TypeScript 或自行编译。
 
 ```bash
-node --check index.js
-node --check bridge.js
-node --check client.js
-node --test tests/*.test.js
+pnpm install --frozen-lockfile
+pnpm typecheck  # strict、noEmit
+pnpm build      # 编译 Host / ModuleLoader Client，并生成类型声明
+pnpm check      # strict 检查，重新构建后运行全部测试
+pnpm pack --out pack.tgz
 ```
 
-15项插件测试覆盖鉴权、跨实例、去重、过期、并发取代、消费者取消、浏览器隔离、归档拒绝、加载失败、主会话确认和 HTTP/RPC 适配及卸载清理。真实桌面验证已通过换台 CLI 打开并恢复普通会话，详见[验证记录](docs/verification.md)。
+20项自动测试保留原15项行为断言，并补充同伴身份/投递令牌绑定、替代实例发现记录、嵌入帧/欢迎页隔离、桌面 index.html 入口和安装产物检查。测试直接加载本次编译的 `lib/`，不以测试替身代替实际 ModuleLoader 包装；CI 同时检查重建后提交产物无差异。
+
+本次 TS 迁移完成自动化验证，未在真实桌面重新安装验收。2026-11-07 的旧版桌面验证曾通过换台 CLI 打开并恢复普通会话；历史记录与本次范围分别列于[验证记录](docs/verification.md)。
 
 图标为原创 SVG，包内提供中英文标题和说明。初版不支持子会话，归档会话需先恢复；冷启动、最小化和隐藏窗口恢复尚未逐项人工验收。普通 `dsh://open` 仅用于唤起应用，本插件不扩展桌面主进程的系统深链接分发。

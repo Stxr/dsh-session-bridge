@@ -6,7 +6,7 @@
 
 公开仓库添加 **`dsh-plugin`** topic，可被 GitHub 的 `topic:dsh-plugin` 搜索找到。社区 [AwesomeHou/dsh-plugin-marketplace](https://github.com/AwesomeHou/dsh-plugin-marketplace#readme) 明确使用 GitHub Search API 实时同步这一话题。`deepseek-harness`、`cordis`、`session-navigation` 等话题用于补充搜索，不能代替 `dsh-plugin`。
 
-该社区市场会探测根目录 `package.json` 的 `dsh.bundle` / `dsh.client`，优先使用已发布 npm 包，未发布到 npm 时可使用 GitHub spec，因此本仓库把可安装包放在根目录，直接提交可执行的 JS 和展示资源，不依赖构建脚本。它的文档也说明部分安装工具默认使用 web profile；本插件必须安装到 **desktop profile**，建议使用 README 中的 AI 安装提示词。
+该社区市场会探测根目录 `package.json` 的 `dsh.bundle` / `dsh.client`，优先使用已发布 npm 包，未发布到 npm 时可使用 GitHub spec，因此本仓库把可安装包清单放在根目录，提交由 TypeScript 编译的 `lib/`、类型声明和展示资源，Git 安装无需执行构建或安装脚本。它的文档也说明部分安装工具默认使用 web profile；本插件必须安装到 **desktop profile**，建议使用 README 中的 AI 安装提示词。
 
 GitHub 的搜索索引和第三方市场缓存可能延迟更新，添加 topic 不等于已被所有市场收录。
 

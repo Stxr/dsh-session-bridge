@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Bridge, authorized, validRequest } from '../bridge.js';
+import { Bridge, authorized, validRequest } from '../lib/bridge.js';
 
 const instanceId = 'instance-one';
 const dataDir = '/test/.dsh';
@@ -88,6 +88,18 @@ test('expires work while asynchronous preflight is still pending', async t => {
   resolvePreflight();
   await Promise.resolve();
   assert.equal(bridge.active, undefined);
+});
+
+test('delivery authorization remains bound to the admitted peer and private token', async t => {
+  const { bridge, client, poll, controller } = setup(t);
+  const waiting = poll();
+  const result = bridge.submit(request());
+  const { request: delivery } = await waiting;
+  const payload = { ...client, ...delivery };
+  assert.equal((await bridge.rpc('authorize', payload, controller.signal, 'other-peer')).status, 'not-ready');
+  assert.equal((await bridge.rpc('authorize', { ...payload, deliveryToken: 'wrong' }, controller.signal, 'owner')).status, 'superseded');
+  assert.equal((await bridge.rpc('ack', { ...payload, status: 'opened', selectedSessionId: delivery.sessionId }, controller.signal, 'owner')).status, 'opened');
+  assert.equal((await result).status, 'opened');
 });
 
 test('releases cancelled polls and refuses a competing page while leased', async t => {

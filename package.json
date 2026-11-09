@@ -1,6 +1,6 @@
 {
   "name": "@stxr/dsh-session-bridge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Let local applications open an exact DeepSeek Harness desktop session and confirm that its history loaded.",
   "author": "Stxr",
   "homepage": "https://github.com/Stxr/dsh-session-bridge#readme",
@@ -8,15 +8,30 @@
   "bugs": { "url": "https://github.com/Stxr/dsh-session-bridge/issues" },
   "keywords": ["dsh-plugin", "deepseek-harness", "cordis", "session", "navigation", "desktop", "huantai"],
   "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/types/host/index.d.ts",
   "exports": {
-    ".": "./index.js",
-    "./client": "./client.js",
+    ".": { "types": "./lib/types/host/index.d.ts", "default": "./lib/index.js" },
+    "./client": { "types": "./lib/types/client/index.d.ts", "default": "./lib/client.js" },
+    "./bridge": { "types": "./lib/types/host/public.d.ts", "default": "./lib/bridge.js" },
     "./locale/*.json": "./locale/*.json",
     "./icon": "./icon.svg"
   },
-  "files": ["index.js", "bridge.js", "client.js", "cordis.patch.yml", "locale/*.json", "icon.svg", "README.md", "docs/*.md", "tests/*.test.js"],
+  "files": ["lib/", "src/", "scripts/", "tsconfig.json", "tsconfig.build.json", "pnpm-lock.yaml", "cordis.patch.yml", "locale/*.json", "icon.svg", "README.md", "docs/*.md", "tests/*.test.js"],
   "engines": { "dsh": "0.2.2-rc.1" },
-  "scripts": { "test": "node --test tests/*.test.js", "check": "node --check index.js && node --check bridge.js && node --check client.js" },
+  "packageManager": "pnpm@10.17.1",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsx scripts/build.ts",
+    "test": "tsx scripts/test.ts",
+    "check": "tsc --noEmit && tsx scripts/test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.0",
+    "esbuild": "0.25.12",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  },
   "dsh": {
     "bundle": { "patch": "./cordis.patch.yml" },
     "client": {
