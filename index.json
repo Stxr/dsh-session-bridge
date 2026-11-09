@@ -22,6 +22,16 @@
       },
       "versions": [
         {
+          "version": "0.1.1",
+          "publishTimestamp": 1794245339,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Stxr/dsh-session-bridge",
+            "commit": "1e328286b8d0cd7c42d29691e9d830eafc15998e"
+          },
+          "engines": { "dsh": "0.2.2-rc.1" }
+        },
+        {
           "version": "0.1.0",
           "publishTimestamp": 1793988583,
           "source": {
