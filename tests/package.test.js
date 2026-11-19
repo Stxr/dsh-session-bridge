@@ -7,8 +7,8 @@ import vm from 'node:vm';
 test('package exports resolve compiled Host, broker, declarations and lazy ModuleLoader Client', async () => {
   const root = new URL('../', import.meta.url);
   const manifest = JSON.parse(await readFile(new URL('package.json', root), 'utf8'));
-  assert.equal(manifest.version, '0.1.1');
-  assert.equal(manifest.engines.dsh, '0.2.2-rc.1');
+  assert.equal(manifest.version, '0.1.2');
+  assert.equal(manifest.engines.dsh, '0.2.2-rc.1 || 0.2.2-rc.3 || 0.2.2-rc.5');
   assert.equal(manifest.dependencies, undefined);
   assert.equal(manifest.scripts.prepare, undefined);
   assert.equal(manifest.scripts.postinstall, undefined);
