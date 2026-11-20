@@ -1,6 +1,6 @@
 # DSH session bridge
 
-让本机应用精确打开 **DeepSeek Harness 桌面应用中的指定会话**，并确认目标历史已加载、主窗口已选中目标。插件同时包含 Cordis Host 与 Client 两侧，兼容并已在 **DSH 0.2.2-rc.1** 验证。
+让本机应用精确打开 **DeepSeek Harness 桌面应用中的指定会话**，并确认目标历史已加载、主窗口已选中目标。插件包含 Cordis Host 和 Client，支持 **DSH 0.2.2-rc.1、rc.3 和 rc.5**。
 
 A reusable local session navigation bridge for DeepSeek Harness. External desktop applications can request an exact conversation and receive a confirmed result after its history loads.
 
@@ -14,7 +14,7 @@ A reusable local session navigation bridge for DeepSeek Harness. External deskto
 请帮我安装 DSH 会话跳转桥：先阅读 https://github.com/Stxr/dsh-session-bridge 的 README，再用 plugin_manager 将推荐的 Git 版本安装到 desktop profile，按返回结果处理重启并检查桥接是否就绪。
 ```
 
-当前推荐 **v0.1.1**，包名为 `@stxr/dsh-session-bridge`，仅兼容 `0.2.2-rc.1`。DSH Agent 可以安装 Git 标签：
+包名为 `@stxr/dsh-session-bridge`。已发布的 `v0.1.1` 标签适用于 DSH `0.2.2-rc.1`。使用 `rc.3` 或 `rc.5` 时，按下方说明从包含 `0.1.2` 的源码目录安装。
 
 ```json
 {"action":"install_bundle","target":"git+https://github.com/Stxr/dsh-session-bridge.git#v0.1.1"}

@@ -1,6 +1,6 @@
 {
   "name": "@stxr/dsh-session-bridge",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Let local applications open an exact DeepSeek Harness desktop session and confirm that its history loaded.",
   "author": "Stxr",
   "homepage": "https://github.com/Stxr/dsh-session-bridge#readme",
@@ -18,7 +18,7 @@
     "./icon": "./icon.svg"
   },
   "files": ["lib/", "src/", "scripts/", "tsconfig.json", "tsconfig.build.json", "pnpm-lock.yaml", "cordis.patch.yml", "locale/*.json", "icon.svg", "README.md", "docs/*.md", "tests/*.test.js"],
-  "engines": { "dsh": "0.2.2-rc.1" },
+  "engines": { "dsh": "0.2.2-rc.1 || 0.2.2-rc.3 || 0.2.2-rc.5" },
   "packageManager": "pnpm@10.17.1",
   "scripts": {
     "typecheck": "tsc --noEmit",
